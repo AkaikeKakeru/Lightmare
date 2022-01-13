@@ -38,11 +38,6 @@ Player::Player(int x,int y, int R,int G, int B)
 	corner.rightBottom.y = edge.bottom;
 }
 
-//void Player::SetLight(Light light)
-//{
-//	light = light;
-//}
-
 //ƒfƒXƒg
 Player::~Player()
 {
@@ -126,55 +121,6 @@ void Player::Move(char *keys)
 	transform.pos.y += speed.direction.y;
 };
 
-//bool Player::CollisionLight(Light light)
-//{
-//	int top = transform.pos.y - transform.radius;
-//	int bottom = transform.pos.y + transform.radius;
-//	int left = transform.pos.x - transform.radius;
-//	int right = transform.pos.x + transform.radius;
-//
-//	int topLight = light.transform.pos.y - light.width.side;
-//	int bottomLight = light.transform.pos.y + light.width.side;
-//	int leftLight = light.transform.pos.x - light.width.length;
-//	int rightLight = light.transform.pos.x + light.width.length;
-//
-//	if(bottom > topLight
-//	&& top < bottomLight)
-//	{
-//		if(right > leftLight
-//		&& left < rightLight)
-//		{
-//			return true;
-//		}
-//	}
-//
-//	return false;
-//}
-//
-//bool CollisionObject(Object obj)
-//{
-//	int top = transform.pos.y - transform.radius;
-//	int bottom = transform.pos.y + transform.radius;
-//	int left = transform.pos.x - transform.radius;
-//	int right = transform.pos.x + transform.radius;
-//
-//	int topLight = obj.transform.pos.y - obj.transform.radius;
-//	int bottomLight = obj.transform.pos.y + obj.transform.radius;
-//	int leftLight = obj.transform.pos.x - obj.transform.radius;
-//	int rightLight = obj.transform.pos.x + obj.transform.radius;
-//
-//	if(bottom > topLight
-//	&& top < bottomLight)
-//	{
-//		if(right > leftLight
-//		&& left < rightLight)
-//		{
-//			return true;
-//		}
-//	}
-//
-//	return false;
-//};
 
 //•`‰æ
 void Player::Draw()

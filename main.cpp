@@ -17,7 +17,6 @@ bool Collision(int topA,int bottomA,int leftA,int rightA,int topB,int bottomB,in
 			return true;
 		}
 	}
-
 	return false;
 }
 
@@ -53,7 +52,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	// ゲームループで使う変数の宣言
 	int i;
-	//int j;
 
 	Player player(100,100,150,150,150);
 
@@ -142,7 +140,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			}
 		}
 
-
 		light.Draw();
 
 		goal.Draw();
@@ -168,7 +165,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			break;
 		}
 	}
-
 
 	// Dxライブラリ終了処理
 	DxLib_End();

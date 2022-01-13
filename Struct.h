@@ -1,7 +1,6 @@
 #pragma once
 #include "DxLib.h"
 
-
 /*ç\ë¢ëÃ*/
 
 //ç¿ïW
@@ -58,11 +57,3 @@ typedef struct Color
 	int B;
 	int RGB;
 }Color;
-
-//
-//
-//typedef struct Character
-//{
-//	Object object;
-//	Speed speed;
-//}Character;

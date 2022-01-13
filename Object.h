@@ -1,7 +1,5 @@
 #pragma once
 #include "Struct.h"
-
-
 typedef struct Object
 {
 	Transform transform;
