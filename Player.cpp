@@ -82,7 +82,7 @@ void Player::Move(char *keys)
 	speed.direction.y = 0;
 
 	if(keys[KEY_INPUT_UP] == true
-	|| keys[KEY_INPUT_W] == true)
+	)//|| keys[KEY_INPUT_W] == true)
 	{
 		if(edge.top > 0)
 		{
@@ -91,7 +91,7 @@ void Player::Move(char *keys)
 	}
 
 	if(keys[KEY_INPUT_DOWN] == true
-	|| keys[KEY_INPUT_S] == true)
+	)//|| keys[KEY_INPUT_S] == true)
 	{
 		if(edge.bottom < WIN_HEIGHT)
 		{
@@ -100,7 +100,7 @@ void Player::Move(char *keys)
 	}
 
 	if(keys[KEY_INPUT_LEFT] == true
-	|| keys[KEY_INPUT_A] == true)
+	)//|| keys[KEY_INPUT_A] == true)
 	{
 		if(edge.left > 0)
 		{
@@ -109,7 +109,7 @@ void Player::Move(char *keys)
 	}
 
 	if(keys[KEY_INPUT_RIGHT] == true
-	|| keys[KEY_INPUT_D] == true)
+	)//|| keys[KEY_INPUT_D] == true)
 	{
 		if(edge.right < WIN_WIDTH)
 		{

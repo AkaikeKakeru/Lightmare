@@ -1,9 +1,10 @@
+#include "DxLib.h"
 #include "Light.h"
 
 //コンスト
 Light::Light()
 {
-		transform.pos.x = BLOCK_SIZE *2;
+		transform.pos.x = BLOCK_SIZE + BLOCK_SIZE /2;
 		transform.pos.y = BLOCK_SIZE + BLOCK_SIZE /2 ;
 		transform.radius = BLOCK_SIZE / 2;
 
@@ -44,12 +45,25 @@ Light::~Light()
 };
 
 //座標取得
-void Light::GetCoordinate()
+void Light::SetCoordinate(int posX,int posY,bool sideway)
 {
+	transform.pos.x = posX;
+	transform.pos.y = posY;
+
+	if(sideway == true)
+	{
 	edge.top = transform.pos.y - width.side;
 	edge.bottom = transform.pos.y + width.side;
 	edge.left = transform.pos.x - width.length;
 	edge.right = transform.pos.x + width.length;
+	}
+	else
+	{
+	edge.top = transform.pos.y - width.length;
+	edge.bottom = transform.pos.y + width.length;
+	edge.left = transform.pos.x - width.side;
+	edge.right = transform.pos.x + width.side;
+	}
 
 	corner.leftTop.x = edge.left;
 	corner.leftTop.y = edge.top;
@@ -64,17 +78,69 @@ void Light::GetCoordinate()
 	corner.rightBottom.y = edge.bottom;
 };
 //描画
-void Light::Draw()
+void Light::Draw(bool sideway)
 {
 	int top = transform.pos.y - width.side;
 	int bottom = transform.pos.y + width.side;
 	int left = transform.pos.x - width.length;
 	int right = transform.pos.x + width.length;
 
+	if(sideway == true)
+	{
+	top = transform.pos.y - width.side;
+	bottom = transform.pos.y + width.side;
+	left = transform.pos.x - width.length;
+	right = transform.pos.x + width.length;
+	}
+	else
+	{
+	top = transform.pos.y - width.length;
+	bottom = transform.pos.y + width.length;
+	left = transform.pos.x - width.side;
+	right = transform.pos.x + width.side;
+	}
+
 	DrawBox(left,top,right,bottom,color.RGB,true);
 };
 
-//更新
-void Light::UpDate()
+void Light::Move(char*keys,char *oldkeys)
 {
+	if(keys[KEY_INPUT_W] == false
+	&& oldkeys[KEY_INPUT_W] == true)
+	{
+		transform.pos.y -= BLOCK_SIZE;
+	}
+
+	if(keys[KEY_INPUT_S] == false
+	&& oldkeys[KEY_INPUT_S] == true)
+	{
+		transform.pos.y += BLOCK_SIZE;
+	}
+
+	if(keys[KEY_INPUT_A] == false
+	&& oldkeys[KEY_INPUT_A] == true)
+	{
+		transform.pos.x -= BLOCK_SIZE;
+	}
+
+	if(keys[KEY_INPUT_D] == false
+	&& oldkeys[KEY_INPUT_D] == true)
+	{
+		transform.pos.x += BLOCK_SIZE;
+	}
+
+	if(keys[KEY_INPUT_C] == false
+	&& oldkeys[KEY_INPUT_C] == true)
+	{
+		IsSideways = !IsSideways;
+	}
+}
+
+//更新
+void Light::UpDate(char *keys,char *oldkeys)
+{
+	SetCoordinate(transform.pos.x,transform.pos.y,IsSideways);
+	Move(keys,oldkeys);
+	
+
 };

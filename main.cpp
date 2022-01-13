@@ -103,8 +103,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		//---------  ここからプログラムを記述  ----------//
 
 		// 更新処理
-		light.GetCoordinate();
+		/*light.Move(keys);
 
+		light.SetCoordinate(light.transform.pos.x,light.transform.pos.y,light.IsSideways);*/
+		light.UpDate(keys,oldkeys);
 		player.UpDate(keys);
 
 		// 描画処理
@@ -140,7 +142,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			}
 		}
 
-		light.Draw();
+		light.Draw(light.IsSideways);
 
 		goal.Draw();
 
