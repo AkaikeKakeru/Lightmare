@@ -130,6 +130,7 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapChip.cpp" />
+    <ClCompile Include="Mirror.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
@@ -137,9 +138,15 @@
     <ClInclude Include="Grobal.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="MapChip.h" />
+    <ClInclude Include="Mirror.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
     <ClInclude Include="Struct.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="mirror.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,22 @@
 #pragma once
 #include "DxLib.h"
 
+enum MirrorDirection
+{
+	UpRight,
+	DownRight,
+	DownLeft,
+	UpLeft
+};
+
+enum MirrorDirection
+{
+	Up,
+	Right,
+	Down,
+	Left
+};
+
 /*ç\ë¢ëÃ*/
 
 //ç¿ïW

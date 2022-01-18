@@ -5,6 +5,7 @@
 #include "Object.h"
 #include "Light.h"
 #include "MapChip.h"
+#include "Mirror.h"
 
 bool Collision(int topA, int bottomA, int leftA, int rightA, int topB, int bottomB, int leftB, int rightB)
 {
@@ -48,10 +49,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	// 画像などのリソースデータの変数宣言と読み込み
-
+	int mirrorGH = LoadGraph("mirror.png");
 
 	// ゲームループで使う変数の宣言
 	int i;
+
+	//光の最大個数
+	const int LIGHT_MAX = 5;
+	int lightMax = 1;
+
+	//鏡の最大個数
+	const int MIRROR_MAX = 5;
+	int mirrorMax = 0;//ステージごとに変える用
+
+
+	int stage = 0;
+	int stageReset = 0;
+
 
 	Player player(100, 100, 150, 150, 150);
 
@@ -60,6 +74,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	MapChip map[MAP_HEIGHT][MAP_WIDTH];
 
 	Object goal(9 * BLOCK_SIZE + BLOCK_SIZE / 2, 9 * BLOCK_SIZE + BLOCK_SIZE / 2, 150, 150, 100);
+
+	Mirror mirror[MIRROR_MAX];
+
+	for (int i = 0; i < MIRROR_MAX; i++)
+	{
+		mirror[i].transform.pos.x = 0;
+		mirror[i].transform.pos.y = 0;
+		mirror[i].transform.radius = 32;
+
+		mirror[i].alive = false;
+		mirror[i].direction = 0;
+		mirror[i].angle = 0;
+		//mirror[i].graph = mirrorGH;
+	}
 
 	for (int y = 0; y < MAP_HEIGHT; y++)
 	{
@@ -102,7 +130,65 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		ClearDrawScreen();
 		//---------  ここからプログラムを記述  ----------//
 
-		// 更新処理
+		// 更新処理//ステージ移動
+		if (keys[KEY_INPUT_RETURN] == 1 && oldkeys[KEY_INPUT_RETURN] == 0) {
+			stage++;
+			stageReset = 0;
+		}
+
+		//ステージ移動時初期化
+		if (stageReset == 0)
+		{
+
+			//ステージ1
+
+			if (stage == 1)
+			{
+
+				stageReset = 1;
+
+				////最初の光の座標
+				//lightStartPosX[0] = WIN_WIDTH / 2;
+				//lightStartPosY[0] = startY;
+				//lightEndPosX[0] = WIN_WIDTH / 2;
+				//lightEndPosY[0] = endY;
+
+				////初期座標の保存
+				//lightOldStartPosX[0] = lightStartPosX[0];
+				//lightOldStartPosY[0] = lightStartPosY[0];
+				//lightOldEndPosX[0] = lightEndPosX[0];
+				//lightOldEndPosY[0] = lightEndPosY[0];
+
+				//出てくる鏡の個数
+				mirrorMax = 2;
+
+				//鏡の初期値+最初の光の向き
+
+				mirror[0].transform.pos.x = WIN_WIDTH / 2 - BLOCK_SIZE * 2 + BLOCK_SIZE /2;
+				mirror[0].transform.pos.y = WIN_HEIGHT / 2 + BLOCK_SIZE /2;
+				mirror[0].direction = 0;
+				mirror[0].alive = true;
+
+
+				mirror[1].transform.pos.x = WIN_WIDTH / 2 + BLOCK_SIZE * 2 + BLOCK_SIZE /2;
+				mirror[1].transform.pos.y = WIN_HEIGHT / 2 + BLOCK_SIZE /2;
+				mirror[1].direction = 2;
+				mirror[1].alive = true;
+				//lightDirection[0] = 2;
+
+				//ゴールの初期位置
+
+				goal.transform.pos.x = WIN_WIDTH - goal.transform.radius;
+				goal.transform.pos.y = WIN_HEIGHT - goal.transform.radius;
+
+			}
+		}
+
+		for (int i = 0; i < mirrorMax; i++)
+		{
+			mirror[i].Move(keys, oldkeys);
+		}
+
 		light.UpDate(keys, oldkeys);
 		player.UpDate(keys);
 
@@ -122,7 +208,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			goal.color.B = 100;
 		}
 
-		 if (Collision(player.edge.top, player.edge.bottom, player.edge.left, player.edge.right,
+		if (Collision(player.edge.top, player.edge.bottom, player.edge.left, player.edge.right,
 			goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right) == true)
 		{
 
@@ -168,6 +254,21 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		goal.Draw();
 
+		for (int i = 0; i < mirrorMax; i++)
+		{
+			if(mirror[i].alive == true)
+			{
+				//mirror[i].Draw();
+				DrawBox(mirror[i].transform.pos.x - mirror[i].transform.radius,
+					mirror[i].transform.pos.y - mirror[i].transform.radius,
+					mirror[i].transform.pos.x + mirror[i].transform.radius,
+					mirror[i].transform.pos.y + mirror[i].transform.radius,
+					GetColor(200,50,50),true);
+
+				DrawRotaGraph(mirror[i].transform.pos.x, mirror[i].transform.pos.y, 1.0, mirror[i].angle,mirrorGH, TRUE);
+			}
+		}
+
 		player.Draw();
 
 		//---------  ここまでにプログラムを記述  ---------//
@@ -189,6 +290,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			break;
 		}
 	}
+
+	DeleteGraph(mirrorGH);
 
 	// Dxライブラリ終了処理
 	DxLib_End();
