@@ -141,6 +141,4 @@ void Light::UpDate(char *keys,char *oldkeys)
 {
 	SetCoordinate(transform.pos.x,transform.pos.y,IsSideways);
 	Move(keys,oldkeys);
-	
-
 };

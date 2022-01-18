@@ -72,5 +72,7 @@ void Object::Draw()
 	int left = transform.pos.x - transform.radius;
 	int right = transform.pos.x + transform.radius;
 
+	color.RGB = GetColor(color.R,color.G,color.B);
+
 	DrawBox(left,top,right,bottom,color.RGB,true);
 }
