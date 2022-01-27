@@ -144,29 +144,42 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		if (keys[KEY_INPUT_RETURN] == 1
 			&& oldkeys[KEY_INPUT_RETURN] == 0)
 		{
-		switch (sceneNow)
-		{
-		case Title:
-			sceneNow = StageSelect;
-			break;
-		case StageSelect:
-			sceneNow = Play;
-			break;
-		default:
-			sceneNow =Title;
-			break;
-		}
+			switch (sceneNow)
+			{
+			case Title:
+				sceneNow = StageSelect;
+				break;
+			case StageSelect:
+				sceneNow = INIT;
+				break;/*
+			case INIT:
+				sceneNow = Play;
+				break;*/
+			default:
+				sceneNow = Title;
+				break;
+			}
 		}
 
-		if(sceneNow == StageSelect)
+		if (sceneNow == StageSelect)
 		{
-			if(keys[KEY_INPUT_RIGHT] == true
-			&& oldkeys[KEY_INPUT_RIGHT] == false)
-			stage++;
-			stageReset = 0;
+			if (keys[KEY_INPUT_RIGHT] == true
+				&& oldkeys[KEY_INPUT_RIGHT] == false)
+			{
+				if(stage < 3)
+				stage++;
+			}
+
+			if (keys[KEY_INPUT_LEFT] == true
+				&& oldkeys[KEY_INPUT_LEFT] == false)
+			{
+				if(stage > 1)
+				stage--;
+			}
+			//stageReset = 0;
 		}
 		//ステージ移動時初期化
-		if (stageReset == 0)
+		if (sceneNow == INIT)//stageReset == 0)
 		{
 			for (int i = 0; i < MIRROR_MAX; i++)
 			{
@@ -194,7 +207,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 			case 2:
 				//出てくる鏡の個数
-				mirrorMax = 2;
+				mirrorMax = 3;
 
 				goal.transform.pos.x = 8;
 				goal.transform.pos.y = 0;
@@ -204,6 +217,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				mirror[0].transform.pos.y = 4;
 				mirror[1].transform.pos.x = 0;
 				mirror[1].transform.pos.y = 4;
+				mirror[2].transform.pos.x = 3;
+				mirror[2].transform.pos.y = 9;
 				light.transform.pos.x = 8;
 				light.transform.pos.y = 9;
 				break;
@@ -264,14 +279,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					//		//lightOldEndPosY[0] = lightEndPosY[0];
 
 					//		//出てくる鏡の個数
-			mirrorMax = 2;
+			//mirrorMax = 2;
 
 			//		//鏡の初期値+最初の光の向き
 
 			//		mirror[0].transform.pos.x = WIN_WIDTH / 2 - BLOCK_SIZE * 2 + BLOCK_SIZE /2;
 			//		mirror[0].transform.pos.y = WIN_HEIGHT / 2 + BLOCK_SIZE /2;
-			mirror[0].direction = 0;
-			mirror[0].alive = true;
+			//mirror[0].direction = 0;
+			//mirror[0].alive = true;
 
 
 			//		mirror[1].transform.pos.x = WIN_WIDTH / 2 + BLOCK_SIZE * 2 + BLOCK_SIZE /2;
@@ -287,117 +302,119 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 			//	}
 
-			stageReset = 1;
+			//stageReset = 1;
+
+			sceneNow = Play;
 		}
 
-		if(sceneNow == Play)
+		if (sceneNow == Play)
 		{
-		for (int i = 0; i < mirrorMax; i++)
-		{
-			mirror[i].Move(keys, oldkeys);
-		}
+			for (int i = 0; i < mirrorMax; i++)
+			{
+				mirror[i].Move(keys, oldkeys);
+			}
 
-		light.UpDate(keys, oldkeys);
-		player.UpDate(keys);
+			light.UpDate(keys, oldkeys);
+			player.UpDate(keys);
 
 		}
 		// 描画処理
-		if(sceneNow == Title)
+		if (sceneNow == Title)
 		{
-			DrawFormatString(100,WIN_HEIGHT/2,GetColor(255,255,255),"TITLE");
-		}
-		
-		if(sceneNow == StageSelect)
-		{
-			DrawFormatString(100,WIN_HEIGHT/2,GetColor(255,255,255),"STAGE SELECT");
+			DrawFormatString(100, WIN_HEIGHT / 2, GetColor(255, 255, 255), "TITLE");
 		}
 
-
-		if(sceneNow == Play)
+		if (sceneNow == StageSelect)
 		{
-
-		if (Collision(goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right,
-			light.edge.top, light.edge.bottom, light.edge.left, light.edge.right) == true)
-		{
-			goal.color.R = 250;
-			goal.color.G = 250;
-			goal.color.B = 100;
-		}
-		else
-		{
-			goal.color.R = 150;
-			goal.color.G = 150;
-			goal.color.B = 100;
+			DrawFormatString(100, WIN_HEIGHT / 2, GetColor(255, 255, 255), "STAGE SELECT \n %d\n",stage);
 		}
 
-		if (Collision(player.edge.top, player.edge.bottom, player.edge.left, player.edge.right,
-			goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right) == true)
+
+		if (sceneNow == Play)
 		{
 
 			if (Collision(goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right,
 				light.edge.top, light.edge.bottom, light.edge.left, light.edge.right) == true)
 			{
-				player.color.R = 220;
-				player.color.G = 220;
-				player.color.B = 200;
+				goal.color.R = 250;
+				goal.color.G = 250;
+				goal.color.B = 100;
 			}
 			else
 			{
-				goal.color.R = 50;
-				goal.color.G = 50;
-				goal.color.B = 50;
+				goal.color.R = 150;
+				goal.color.G = 150;
+				goal.color.B = 100;
 			}
-		}
 
-		else if (Collision(player.edge.top, player.edge.bottom, player.edge.left, player.edge.right,
-			light.edge.top, light.edge.bottom, light.edge.left, light.edge.right) == true)
-		{
-			player.color.R = 50;
-			player.color.G = 50;
-			player.color.B = 120;
-		}
-
-		else
-		{
-			player.color.R = 150;
-			player.color.G = 150;
-			player.color.B = 210;
-		}
-
-		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
-		for (int y = 0; y < 10; y++)
-		{
-			for (int x = 0; x < MAP_WIDTH; x++)
+			if (Collision(player.edge.top, player.edge.bottom, player.edge.left, player.edge.right,
+				goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right) == true)
 			{
-				map[y][x].Draw();
+
+				if (Collision(goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right,
+					light.edge.top, light.edge.bottom, light.edge.left, light.edge.right) == true)
+				{
+					player.color.R = 220;
+					player.color.G = 220;
+					player.color.B = 200;
+				}
+				else
+				{
+					goal.color.R = 50;
+					goal.color.G = 50;
+					goal.color.B = 50;
+				}
 			}
-		}
 
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
-
-		light.Draw(light.IsSideways);
-
-		goal.Draw();
-
-		for (int i = 0; i < mirrorMax; i++)
-		{
-			if (mirror[i].alive == true)
+			else if (Collision(player.edge.top, player.edge.bottom, player.edge.left, player.edge.right,
+				light.edge.top, light.edge.bottom, light.edge.left, light.edge.right) == true)
 			{
-				//mirror[i].Draw();
-				DrawBox(mirror[i].transform.pos.x - mirror[i].transform.radius,
-					mirror[i].transform.pos.y - mirror[i].transform.radius,
-					mirror[i].transform.pos.x + mirror[i].transform.radius,
-					mirror[i].transform.pos.y + mirror[i].transform.radius,
-					GetColor(200, 50, 50), true);
-
-				DrawRotaGraph(mirror[i].transform.pos.x, mirror[i].transform.pos.y, 1.0, mirror[i].angle, mirrorGH, TRUE);
+				player.color.R = 50;
+				player.color.G = 50;
+				player.color.B = 120;
 			}
-		}
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawGraph(player.transform.pos.x - BLOCK_SIZE * 2, player.transform.pos.y - BLOCK_SIZE * 2, searchGH, true);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
-		player.Draw();
+			else
+			{
+				player.color.R = 150;
+				player.color.G = 150;
+				player.color.B = 210;
+			}
+
+			//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
+			for (int y = 0; y < 10; y++)
+			{
+				for (int x = 0; x < MAP_WIDTH; x++)
+				{
+					map[y][x].Draw();
+				}
+			}
+
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
+
+			light.Draw(light.IsSideways);
+
+			goal.Draw();
+
+			for (int i = 0; i < mirrorMax; i++)
+			{
+				if (mirror[i].alive == true)
+				{
+					//mirror[i].Draw();
+					DrawBox(mirror[i].transform.pos.x - mirror[i].transform.radius,
+						mirror[i].transform.pos.y - mirror[i].transform.radius,
+						mirror[i].transform.pos.x + mirror[i].transform.radius,
+						mirror[i].transform.pos.y + mirror[i].transform.radius,
+						GetColor(200, 50, 50), true);
+
+					DrawRotaGraph(mirror[i].transform.pos.x, mirror[i].transform.pos.y, 1.0, mirror[i].angle, mirrorGH, TRUE);
+				}
+			}
+
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+			DrawGraph(player.transform.pos.x - BLOCK_SIZE * 2, player.transform.pos.y - BLOCK_SIZE * 2, searchGH, true);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
+			player.Draw();
 
 		}
 		//---------  ここまでにプログラムを記述  ---------//

@@ -20,5 +20,6 @@ typedef enum Scene
 {
 	Title,
 	StageSelect,
+	INIT,
 	Play
 }Scene;
