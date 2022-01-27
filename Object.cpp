@@ -76,3 +76,23 @@ void Object::Draw()
 
 	DrawBox(left,top,right,bottom,color.RGB,true);
 }
+
+void Object::GetCoordinate()
+{
+	edge.top = transform.pos.y - transform.radius;
+	edge.bottom = transform.pos.y + transform.radius;
+	edge.left = transform.pos.x - transform.radius;
+	edge.right = transform.pos.x + transform.radius;
+
+	corner.leftTop.x = edge.left;
+	corner.leftTop.y = edge.top;
+
+	corner.leftBottom.x = edge.left;
+	corner.leftBottom.y = edge.bottom;
+
+	corner.rightTop.x = edge.right;
+	corner.rightTop.y = edge.top;
+
+	corner.rightBottom.x = edge.right;
+	corner.rightBottom.y = edge.bottom;
+};

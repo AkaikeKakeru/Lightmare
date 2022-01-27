@@ -9,13 +9,27 @@ enum MirrorDirection
 	UpLeft
 };
 
-enum MirrorDirection
+enum LightDirection
 {
 	Up,
 	Right,
 	Down,
 	Left
 };
+
+enum MapInfo
+{
+	START,
+	LIGHT_SOURCE,
+	MIRROR,
+	NONE,
+	BLOCK,
+	GOAL,
+};
+
+//enum StageNum
+//{
+//};
 
 /*ç\ë¢ëÃ*/
 

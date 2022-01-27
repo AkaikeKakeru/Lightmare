@@ -11,5 +11,7 @@ typedef struct Object
 	Object(int x,int y, int R,int G, int B);
 	~Object();
 
+	void GetCoordinate();
+
 	void Draw();
 }Object;

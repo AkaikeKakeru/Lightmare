@@ -15,3 +15,10 @@ const int WIN_WIDTH = BLOCK_SIZE * MAP_WIDTH;
 
 // ウィンドウ縦幅
 const int WIN_HEIGHT = BLOCK_SIZE * MAP_HEIGHT;
+
+typedef enum Scene 
+{
+	Title,
+	StageSelect,
+	Play
+}Scene;
