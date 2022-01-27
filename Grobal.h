@@ -21,5 +21,7 @@ typedef enum Scene
 	Title,
 	StageSelect,
 	INIT,
-	Play
+	OutIt,
+	Play,
+	Pause
 }Scene;

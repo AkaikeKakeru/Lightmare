@@ -151,12 +151,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				break;
 			case StageSelect:
 				sceneNow = INIT;
-				break;/*
-			case INIT:
-				sceneNow = Play;
-				break;*/
+				break;
+				
+			case Play:
+				sceneNow = Pause;
+				break;
+
+			
 			default:
-				sceneNow = Title;
+				//sceneNow = Title;
 				break;
 			}
 		}
@@ -309,6 +312,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		if (sceneNow == Play)
 		{
+
+			if(keys[KEY_INPUT_LSHIFT] == true
+				&& oldkeys[KEY_INPUT_LSHIFT] == false)
+				sceneNow = Pause;
+
 			for (int i = 0; i < mirrorMax; i++)
 			{
 				mirror[i].Move(keys, oldkeys);
@@ -318,6 +326,34 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			player.UpDate(keys);
 
 		}
+
+		if (sceneNow == Pause)
+		{
+			if (keys[KEY_INPUT_LSHIFT] == true
+				&& oldkeys[KEY_INPUT_LSHIFT] == false)
+			{
+				sceneNow = Play;
+			}
+
+			if (keys[KEY_INPUT_BACK] == true
+				&& oldkeys[KEY_INPUT_BACK] == false)
+			{
+				sceneNow = OutIt;
+			}
+		}
+
+		if(sceneNow == OutIt)
+		{
+			for (int i = 0; i < MIRROR_MAX; i++)
+	{
+		mirror[i].transform.pos.x = 0;
+		mirror[i].transform.pos.y = 0;
+
+		mirror[i].alive = false;
+	}
+			sceneNow = Title;
+		}
+
 		// 描画処理
 		if (sceneNow == Title)
 		{
@@ -416,6 +452,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
 			player.Draw();
 
+		}
+
+		if (sceneNow == Pause)
+		{
+			DrawFormatString(100, WIN_HEIGHT / 2, GetColor(255, 255, 255), "PAUSE");
 		}
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
