@@ -6,7 +6,6 @@
 #include "Light.h"
 #include "MapChip.h"
 #include "Mirror.h"
-#include "Stage.h"
 
 bool Collision(int topA, int bottomA, int leftA, int rightA, int topB, int bottomB, int leftB, int rightB)
 {
@@ -57,7 +56,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	int i;
 
 	int alpha = 150;
-
 
 	//åıÇÃç≈ëÂå¬êî
 	const int LIGHT_MAX = 5;
@@ -152,16 +150,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			case StageSelect:
 				sceneNow = INIT;
 				break;
-				
+
 			case Play:
 				sceneNow = Pause;
 				break;
 
-			
+
 			default:
 				//sceneNow = Title;
 				break;
 			}
+			//ChangeScene(sceneNow);
+
 		}
 
 		if (sceneNow == StageSelect)
@@ -169,15 +169,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			if (keys[KEY_INPUT_RIGHT] == true
 				&& oldkeys[KEY_INPUT_RIGHT] == false)
 			{
-				if(stage < 3)
-				stage++;
+				if (stage < 3)
+					stage++;
 			}
 
 			if (keys[KEY_INPUT_LEFT] == true
 				&& oldkeys[KEY_INPUT_LEFT] == false)
 			{
-				if(stage > 1)
-				stage--;
+				if (stage > 1)
+					stage--;
 			}
 			//stageReset = 0;
 		}
@@ -188,9 +188,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			{
 				mirror[i].alive = false;
 			}
-
-			//MapSetting(stage,goal.transform.pos,player.transform.pos,mirror[0].transform.pos,light.transform.pos);
-
 
 			switch (stage)
 			{
@@ -313,7 +310,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		if (sceneNow == Play)
 		{
 
-			if(keys[KEY_INPUT_LSHIFT] == true
+			if (keys[KEY_INPUT_LSHIFT] == true
 				&& oldkeys[KEY_INPUT_LSHIFT] == false)
 				sceneNow = Pause;
 
@@ -342,15 +339,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			}
 		}
 
-		if(sceneNow == OutIt)
+		if (sceneNow == OutIt)
 		{
 			for (int i = 0; i < MIRROR_MAX; i++)
-	{
-		mirror[i].transform.pos.x = 0;
-		mirror[i].transform.pos.y = 0;
+			{
+				mirror[i].transform.pos.x = 0;
+				mirror[i].transform.pos.y = 0;
 
-		mirror[i].alive = false;
-	}
+				mirror[i].alive = false;
+			}
 			sceneNow = Title;
 		}
 
@@ -362,7 +359,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		if (sceneNow == StageSelect)
 		{
-			DrawFormatString(100, WIN_HEIGHT / 2, GetColor(255, 255, 255), "STAGE SELECT \n %d\n",stage);
+			DrawFormatString(100, WIN_HEIGHT / 2, GetColor(255, 255, 255), "STAGE SELECT \n %d\n", stage);
 		}
 
 
