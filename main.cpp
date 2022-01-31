@@ -578,10 +578,21 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 			goal.Draw();
 
+
+			
+
+
 			for (int i = 0; i < mirrorMax; i++)
 			{
 				if (mirror[i].alive == true)
 				{
+					if(isContMirror == true)
+					{
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+						DrawCircle(mirror[i].transform.pos.x,mirror[i].transform.pos.y,BLOCK_SIZE ,GetColor(190,140,140),true);
+						SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
+					}
+
 					//mirror[i].Draw();
 					DrawBox(mirror[i].transform.pos.x - mirror[i].transform.radius,
 						mirror[i].transform.pos.y - mirror[i].transform.radius,
@@ -593,9 +604,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				}
 			}
 
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+			/*SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 			DrawGraph(player.transform.pos.x - BLOCK_SIZE * 2, player.transform.pos.y - BLOCK_SIZE * 2, searchGH, true);
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);*/
+
+			if(isContMirror == false)
+					{
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+						DrawCircle(player.transform.pos.x,player.transform.pos.y,BLOCK_SIZE ,GetColor(140,140,190),true);
+						SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
+					}
+
 			player.Draw();
 
 			if (clearTutrial == false)
@@ -651,6 +670,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					}
 					else
 					{
+						for (int i = 0; i < lightMax; i++)
+						{
+
 						if (Collision(goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right,
 							light[i].edge.top, light[i].edge.bottom, light[i].edge.left, light[i].edge.right) == true)
 						{
@@ -659,6 +681,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						else
 						{
 							DrawFormatString(200, WIN_HEIGHT / 2 + 100, white, "‚Ü‚¸‚Í‹¾‚ð‘€ì‚µ‚ÄƒS[ƒ‹‚ð‹N“®‚³‚¹‚æ‚¤\n");
+						}
 						}
 					}
 
