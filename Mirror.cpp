@@ -37,26 +37,24 @@ Mirror::~Mirror()
 
 void Mirror::Move(char* keys,char*oldkeys)
 {
-	if (keys[KEY_INPUT_I] == false
-	&& oldkeys[KEY_INPUT_I] == true)
+	if (keys[KEY_INPUT_UP] == true)
 	{
-		transform.pos.y-=BLOCK_SIZE;
-	}
-	if (keys[KEY_INPUT_K] == false
-	&& oldkeys[KEY_INPUT_K] == true)
-	{
-		transform.pos.y+=BLOCK_SIZE;
+		transform.pos.y-=4;
 	}
 
-	if (keys[KEY_INPUT_J] == false
-	&& oldkeys[KEY_INPUT_J] == true)
+	if (keys[KEY_INPUT_DOWN] == true)
 	{
-		transform.pos.x-=BLOCK_SIZE;
+		transform.pos.y+=4;
 	}
-	if (keys[KEY_INPUT_L] == false
-	&& oldkeys[KEY_INPUT_L] == true)
+
+	if (keys[KEY_INPUT_LEFT] == true)
 	{
-		transform.pos.x+=BLOCK_SIZE;
+		transform.pos.x-=4;
+	}
+
+	if (keys[KEY_INPUT_RIGHT] == true)
+	{
+		transform.pos.x+=4;
 	}
 }
 

@@ -36,5 +36,7 @@ typedef struct Light
 	//êF
 	Color color;
 
+	bool alive;
+
 	bool IsSideways;
 }Light;

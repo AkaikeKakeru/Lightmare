@@ -15,6 +15,8 @@ Light::Light()
 		speed.direction.y = 0;
 		speed.config = 4;
 
+		alive = false;
+
 		IsSideways = true;
 	
 		color.R = 230;
@@ -140,5 +142,5 @@ void Light::Move(char*keys,char *oldkeys)
 void Light::UpDate(char *keys,char *oldkeys)
 {
 	SetCoordinate(transform.pos.x,transform.pos.y,IsSideways);
-	Move(keys,oldkeys);
+	//Move(keys,oldkeys);
 };

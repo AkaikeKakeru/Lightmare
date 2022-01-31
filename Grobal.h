@@ -25,3 +25,16 @@ typedef enum Scene
 	Play,
 	Pause
 }Scene;
+
+typedef enum Result
+{
+	EMP,
+	Clear,
+	Over,
+}Result;
+
+//enum Control
+//{
+//	CHARA,
+//	MIRROR
+//};

@@ -67,14 +67,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 
 	int sceneNow = Title;
+	int resultNow = EMP;
 
 	int stage = 1;
 	int stageReset = 0;
 
+	bool clearTutrial = false;
+
+	int countEvent = 250;
+
+	bool isContMirror = false;
 
 	Player player(100, 100, 150, 150, 150);
 
-	Light light;
+	Light light[LIGHT_MAX];
 
 	MapChip map[MAP_HEIGHT][MAP_WIDTH];
 
@@ -91,7 +97,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		mirror[i].alive = false;
 		mirror[i].direction = 0;
 		mirror[i].angle = 0;
-		//mirror[i].graph = mirrorGH;
+	}
+
+	for (int i = 0; i < MIRROR_MAX; i++)
+	{
+		light[i].transform.pos.x = -1;
+		light[i].transform.pos.y = -1;
+		light[i].transform.radius = 32;
+
+		light[i].alive = false;
 	}
 
 	for (int y = 0; y < MAP_HEIGHT; y++)
@@ -137,7 +151,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		// 更新処理
 
-
 	//ステージ移動
 		if (keys[KEY_INPUT_RETURN] == 1
 			&& oldkeys[KEY_INPUT_RETURN] == 0)
@@ -145,7 +158,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			switch (sceneNow)
 			{
 			case Title:
-				sceneNow = StageSelect;
+				if (clearTutrial == true)
+				{
+					sceneNow = StageSelect;
+				}
+				else
+				{
+					sceneNow = INIT;
+				}
 				break;
 			case StageSelect:
 				sceneNow = INIT;
@@ -155,21 +175,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				sceneNow = Pause;
 				break;
 
-
 			default:
-				//sceneNow = Title;
 				break;
 			}
-			//ChangeScene(sceneNow);
-
 		}
 
 		if (sceneNow == StageSelect)
 		{
+			resultNow = EMP;
+
 			if (keys[KEY_INPUT_RIGHT] == true
 				&& oldkeys[KEY_INPUT_RIGHT] == false)
 			{
-				if (stage < 3)
+				//ここ最大Stage数
+				if (stage < 4)
 					stage++;
 			}
 
@@ -179,67 +198,125 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 				if (stage > 1)
 					stage--;
 			}
-			//stageReset = 0;
 		}
 		//ステージ移動時初期化
-		if (sceneNow == INIT)//stageReset == 0)
+		if (sceneNow == INIT)
 		{
+			resultNow = EMP;
+
 			for (int i = 0; i < MIRROR_MAX; i++)
 			{
 				mirror[i].alive = false;
 			}
 
-			switch (stage)
+			if (clearTutrial == true)
 			{
-			case 1:
-				//出てくる鏡の個数
-				mirrorMax = 1;
+				switch (stage)
+				{
+				case 1:
+					//出てくる鏡の個数
+					mirrorMax = 3;
 
-				goal.transform.pos.x = 4;
-				goal.transform.pos.y = 0;
-				player.transform.pos.x = 0;
-				player.transform.pos.y = 7;
-				mirror[0].transform.pos.x = 4;
-				mirror[0].transform.pos.y = 9;
-				light.transform.pos.x = 9;
-				light.transform.pos.y = 9;
-				break;
+					goal.transform.pos.x = 8;
+					goal.transform.pos.y = 0;
 
-			case 2:
-				//出てくる鏡の個数
-				mirrorMax = 3;
+					player.transform.pos.x = 0;
+					player.transform.pos.y = 0;
 
-				goal.transform.pos.x = 8;
-				goal.transform.pos.y = 0;
-				player.transform.pos.x = 0;
-				player.transform.pos.y = 0;
-				mirror[0].transform.pos.x = 9;
-				mirror[0].transform.pos.y = 4;
-				mirror[1].transform.pos.x = 0;
-				mirror[1].transform.pos.y = 4;
-				mirror[2].transform.pos.x = 3;
-				mirror[2].transform.pos.y = 9;
-				light.transform.pos.x = 8;
-				light.transform.pos.y = 9;
-				break;
+					mirror[0].transform.pos.x = 8;
+					mirror[0].transform.pos.y = 4;
 
-			case 3:
-				//出てくる鏡の個数
-				mirrorMax = 2;
+					mirror[1].transform.pos.x = 0;
+					mirror[1].transform.pos.y = 4;
 
-				goal.transform.pos.x = 9;
-				goal.transform.pos.y = 0;
-				player.transform.pos.x = 2;
-				player.transform.pos.y = 2;
-				mirror[0].transform.pos.x = 5;
-				mirror[0].transform.pos.y = 0;
-				mirror[1].transform.pos.x = 5;
-				mirror[1].transform.pos.y = 9;
-				light.transform.pos.x = 8;
-				light.transform.pos.y = 9;
-				break;
-			default:
-				break;
+					mirror[2].transform.pos.x = 3;
+					mirror[2].transform.pos.y = 9;
+
+					light[0].transform.pos.x = 8;
+					light[0].transform.pos.y = 9;
+					break;
+
+				case 2:
+					//出てくる鏡の個数
+					mirrorMax = 2;
+
+					goal.transform.pos.x = 9;
+					goal.transform.pos.y = 0;
+					player.transform.pos.x = 2;
+					player.transform.pos.y = 2;
+					mirror[0].transform.pos.x = 5;
+					mirror[0].transform.pos.y = 0;
+					mirror[1].transform.pos.x = 5;
+					mirror[1].transform.pos.y = 9;
+					light[0].transform.pos.x = 8;
+					light[0].transform.pos.y = 9;
+
+				case 3:
+					//出てくる鏡の個数
+					mirrorMax = 2;
+
+					goal.transform.pos.x = 3;
+					goal.transform.pos.y = 0;
+					player.transform.pos.x = 7;
+					player.transform.pos.y = 6;
+					mirror[0].transform.pos.x = 9;
+					mirror[0].transform.pos.y = 9;
+					mirror[1].transform.pos.x = 9;
+					mirror[1].transform.pos.y = 6;
+					light[0].transform.pos.x = 3;
+					light[0].transform.pos.y = 9;
+					break;
+				default:
+					break;
+				}
+			}
+			else
+			{
+				switch (stage)
+				{
+				case 1:
+					//出てくる鏡の個数
+					mirrorMax = 0;
+
+					goal.transform.pos.x = 8;
+					goal.transform.pos.y = 6;
+					player.transform.pos.x = 0;
+					player.transform.pos.y = 1;
+					light[0].transform.pos.x = 8;
+					light[0].transform.pos.y = 0;
+					light[0].IsSideways = false;
+					break;
+
+				case 2:
+					//出てくる鏡の個数
+					mirrorMax = 1;
+
+					goal.transform.pos.x = 8;
+					goal.transform.pos.y = 1;
+					player.transform.pos.x = 0;
+					player.transform.pos.y = 1;
+					mirror[0].transform.pos.x = 3;
+					mirror[0].transform.pos.y = 3;
+					light[0].transform.pos.x = 0;
+					light[0].transform.pos.y = 3;
+					light[0].IsSideways = true;
+					break;
+
+				case 3:
+					//出てくる鏡の個数
+					mirrorMax = 1;
+
+					goal.transform.pos.x = 4;
+					goal.transform.pos.y = 0;
+					player.transform.pos.x = 0;
+					player.transform.pos.y = 7;
+					mirror[0].transform.pos.x = 7;
+					mirror[0].transform.pos.y = 9;
+					light[0].transform.pos.x = 9;
+					light[0].transform.pos.y = 9;
+					light[0].IsSideways = true;
+					break;
+				}
 			}
 
 			goal.transform.pos.x = goal.transform.pos.x * BLOCK_SIZE + BLOCK_SIZE / 2;
@@ -254,9 +331,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 				mirror[i].alive = true;
 			}
-			light.transform.pos.x = light.transform.pos.x * BLOCK_SIZE + BLOCK_SIZE / 2;
-			light.transform.pos.y = light.transform.pos.y * BLOCK_SIZE + BLOCK_SIZE / 2;
 
+			for (int i = 0; i < lightMax; i++)
+			{
+
+				light[i].transform.pos.x = light[i].transform.pos.x * BLOCK_SIZE + BLOCK_SIZE / 2;
+				light[i].transform.pos.y = light[i].transform.pos.y * BLOCK_SIZE + BLOCK_SIZE / 2;
+
+			}
 			goal.GetCoordinate();
 			//			
 						//ステージ1
@@ -309,18 +391,49 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		if (sceneNow == Play)
 		{
-
+			//Pauseのボタン用
 			if (keys[KEY_INPUT_LSHIFT] == true
 				&& oldkeys[KEY_INPUT_LSHIFT] == false)
-				sceneNow = Pause;
-
-			for (int i = 0; i < mirrorMax; i++)
 			{
-				mirror[i].Move(keys, oldkeys);
+				sceneNow = Pause;
 			}
 
-			light.UpDate(keys, oldkeys);
-			player.UpDate(keys);
+			//操作切り替えのボタン用
+			if (keys[KEY_INPUT_C] == true
+				&& oldkeys[KEY_INPUT_C] == false)
+			{
+				if (isContMirror == false)
+				{
+					isContMirror = true;
+				}
+				else
+				{
+					isContMirror = false;
+				}
+			}
+			for (int i = 0; i < lightMax; i++)
+			{
+				light[i].UpDate(keys, oldkeys);
+			}
+
+			if (isContMirror == true)
+			{
+				for (int i = 0; i < mirrorMax; i++)
+				{
+					mirror[i].Move(keys, oldkeys);
+				}
+			}
+			else
+			{
+				player.UpDate(keys);
+			}
+
+
+			if (Collision(player.edge.top, player.edge.bottom, player.edge.left, player.edge.right,
+				goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right) == true)
+			{
+				resultNow = Clear;
+			}
 
 		}
 
@@ -351,7 +464,37 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			sceneNow = Title;
 		}
 
+
+		if (resultNow == Clear)
+		{
+			countEvent = 150;
+
+			if (keys[KEY_INPUT_LSHIFT] == true
+				&& oldkeys[KEY_INPUT_LSHIFT] == false)
+			{
+				stage++;
+				sceneNow = INIT;
+			}
+
+			if (clearTutrial == true)
+			{
+				if (keys[KEY_INPUT_BACK] == true
+					&& oldkeys[KEY_INPUT_BACK] == false)
+				{
+					sceneNow = StageSelect;
+				}
+			}
+			else if (stage > 3)
+			{
+				clearTutrial = true;
+				sceneNow = INIT;
+				stage = 1;
+			}
+		}
+
 		// 描画処理
+		int white = GetColor(255, 255, 255);
+
 		if (sceneNow == Title)
 		{
 			DrawFormatString(100, WIN_HEIGHT / 2, GetColor(255, 255, 255), "TITLE");
@@ -365,56 +508,58 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		if (sceneNow == Play)
 		{
-
-			if (Collision(goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right,
-				light.edge.top, light.edge.bottom, light.edge.left, light.edge.right) == true)
-			{
-				goal.color.R = 250;
-				goal.color.G = 250;
-				goal.color.B = 100;
-			}
-			else
-			{
-				goal.color.R = 150;
-				goal.color.G = 150;
-				goal.color.B = 100;
-			}
-
-			if (Collision(player.edge.top, player.edge.bottom, player.edge.left, player.edge.right,
-				goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right) == true)
+			for (int i = 0; i < lightMax; i++)
 			{
 
 				if (Collision(goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right,
-					light.edge.top, light.edge.bottom, light.edge.left, light.edge.right) == true)
+					light[i].edge.top, light[i].edge.bottom, light[i].edge.left, light[i].edge.right) == true)
 				{
-					player.color.R = 220;
-					player.color.G = 220;
-					player.color.B = 200;
+					goal.color.R = 250;
+					goal.color.G = 250;
+					goal.color.B = 100;
 				}
 				else
 				{
-					goal.color.R = 50;
-					goal.color.G = 50;
-					goal.color.B = 50;
+					goal.color.R = 150;
+					goal.color.G = 150;
+					goal.color.B = 100;
 				}
-			}
 
-			else if (Collision(player.edge.top, player.edge.bottom, player.edge.left, player.edge.right,
-				light.edge.top, light.edge.bottom, light.edge.left, light.edge.right) == true)
-			{
-				player.color.R = 50;
-				player.color.G = 50;
-				player.color.B = 120;
-			}
+				if (Collision(player.edge.top, player.edge.bottom, player.edge.left, player.edge.right,
+					goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right) == true)
+				{
 
-			else
-			{
-				player.color.R = 150;
-				player.color.G = 150;
-				player.color.B = 210;
-			}
+					if (Collision(goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right,
+						light[i].edge.top, light[i].edge.bottom, light[i].edge.left, light[i].edge.right) == true)
+					{
+						player.color.R = 220;
+						player.color.G = 220;
+						player.color.B = 200;
+					}
+					else
+					{
+						goal.color.R = 50;
+						goal.color.G = 50;
+						goal.color.B = 50;
+					}
+				}
 
-			//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
+				else if (Collision(player.edge.top, player.edge.bottom, player.edge.left, player.edge.right,
+					light[i].edge.top, light[i].edge.bottom, light[i].edge.left, light[i].edge.right) == true)
+				{
+					player.color.R = 50;
+					player.color.G = 50;
+					player.color.B = 120;
+				}
+
+				else
+				{
+					player.color.R = 150;
+					player.color.G = 150;
+					player.color.B = 210;
+				}
+
+			}
 			for (int y = 0; y < 10; y++)
 			{
 				for (int x = 0; x < MAP_WIDTH; x++)
@@ -425,7 +570,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
 
-			light.Draw(light.IsSideways);
+			for (int i = 0; i < lightMax; i++)
+			{
+
+				light[i].Draw(light[i].IsSideways);
+			}
 
 			goal.Draw();
 
@@ -449,6 +598,76 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
 			player.Draw();
 
+			if (clearTutrial == false)
+			{
+				switch (stage)
+				{
+				case 1:
+					if (player.transform.pos.x < BLOCK_SIZE * 3
+						&& player.transform.pos.y < BLOCK_SIZE * 3)
+					{
+						DrawFormatString(200, WIN_HEIGHT / 2, white, " ↑↓←→ で移動できる\n");
+					}
+					else
+					{
+						DrawCircle(goal.transform.pos.x, goal.transform.pos.y, BLOCK_SIZE + 8, white, false);
+
+						DrawFormatString(200, WIN_HEIGHT / 2, white, "まずはゴールを目指そう\n");
+					}
+					break;
+
+				case 2:
+					if (player.transform.pos.x < BLOCK_SIZE * 3
+						&& player.transform.pos.y < BLOCK_SIZE * 3)
+					{
+						if (countEvent > 0)
+						{
+							countEvent--;
+						}
+						else
+						{
+							if (isContMirror == false)
+							{
+								DrawFormatString(200, WIN_HEIGHT / 2 + 100, white, " C で操作を鏡に切り替えられる\n");
+							}
+							else
+							{
+								DrawFormatString(200, WIN_HEIGHT / 2 + 100, white, "鏡を ↑↓←→ で動かして、\n光線の壁から出してあげよう\n");
+							}
+						}
+						DrawFormatString(200, WIN_HEIGHT / 2, white, "この子の体では、\n光線を耐えられない\n");
+					}
+					else
+					{
+						DrawFormatString(200, WIN_HEIGHT / 2, white, "ゴールは光線を光を当てることで起動する\n");
+					}
+
+					break;
+
+				case 3:
+					if (isContMirror == true)
+					{
+						DrawFormatString(200, WIN_HEIGHT / 2 + 100, white, "Spaceで鏡を回転できる\n");
+					}
+					else
+					{
+						if (Collision(goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right,
+							light[i].edge.top, light[i].edge.bottom, light[i].edge.left, light[i].edge.right) == true)
+						{
+							DrawFormatString(200, WIN_HEIGHT / 2 + 100, white, "光線に触れないようにゴールを目指そう\n");
+						}
+						else
+						{
+							DrawFormatString(200, WIN_HEIGHT / 2 + 100, white, "まずは鏡を操作してゴールを起動させよう\n");
+						}
+					}
+
+					break;
+				default:
+					break;
+				}
+
+			}
 		}
 
 		if (sceneNow == Pause)
