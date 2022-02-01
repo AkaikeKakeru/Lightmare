@@ -82,27 +82,47 @@ void Light::SetCoordinate(int posX,int posY,bool sideway)
 //ï`âÊ
 void Light::Draw(bool sideway)
 {
-	int top = transform.pos.y - width.side;
-	int bottom = transform.pos.y + width.side;
+	int x1;
+	int x2;
+	int y1;
+	int y2;
+
+	int top = transform.pos.y - width.length;
+	int bottom = transform.pos.y + width.length;
 	int left = transform.pos.x - width.length;
 	int right = transform.pos.x + width.length;
 
 	if(sideway == true)
 	{
-	top = transform.pos.y - width.side;
-	bottom = transform.pos.y + width.side;
-	left = transform.pos.x - width.length;
-	right = transform.pos.x + width.length;
+	x1 = left;
+	y1 = transform.pos.y;
+	x2 = right;
+	y2 = transform.pos.y;
 	}
 	else
 	{
-	top = transform.pos.y - width.length;
-	bottom = transform.pos.y + width.length;
-	left = transform.pos.x - width.side;
-	right = transform.pos.x + width.side;
+	x1 = transform.pos.x;
+	y1 = top;
+	x2 = transform.pos.x;
+	y2 = bottom;
 	}
 
-	DrawBox(left,top,right,bottom,color.RGB,true);
+	//DrawBox(left,top,right,bottom,color.RGB,true);
+
+
+	int aqua = GetColor(0,128,128);
+	int yellow = GetColor(128, 128, 0);
+	int white = GetColor(255,255,255);
+		//â©êF
+		DrawLine(x1, y1, x2, y2, yellow, 64);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+		DrawLine(x1, y1, x2, y2, yellow, 48);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, 200);
+		DrawLine(x1, y1, x2, y2, white, 24);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 100);
+
+
+
 };
 
 void Light::Move(char*keys,char *oldkeys)

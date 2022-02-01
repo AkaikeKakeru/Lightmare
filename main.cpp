@@ -51,6 +51,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// 画像などのリソースデータの変数宣言と読み込み
 	int mirrorGH = LoadGraph("mirror.png");
 	int searchGH = LoadGraph("search.png");
+	int ghostGH = LoadGraph("Ghost.png");
 
 	// ゲームループで使う変数の宣言
 	int i;
@@ -73,6 +74,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	int stageReset = 0;
 
 	bool clearTutrial = false;
+	//bool clearTutrial = true;
 
 	int countEvent = 250;
 
@@ -95,7 +97,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		mirror[i].transform.radius = 32;
 
 		mirror[i].alive = false;
-		mirror[i].direction = 0;
+		mirror[i].direction = UpLeft;
 		mirror[i].angle = 0;
 	}
 
@@ -266,6 +268,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					light[0].transform.pos.x = 3;
 					light[0].transform.pos.y = 9;
 					break;
+				case 4:
+					
+					break;
+
 				default:
 					break;
 				}
@@ -297,6 +303,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					player.transform.pos.y = 1;
 					mirror[0].transform.pos.x = 3;
 					mirror[0].transform.pos.y = 3;
+					mirror[0].direction = UpLeft;
+
 					light[0].transform.pos.x = 0;
 					light[0].transform.pos.y = 3;
 					light[0].IsSideways = true;
@@ -312,6 +320,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					player.transform.pos.y = 7;
 					mirror[0].transform.pos.x = 7;
 					mirror[0].transform.pos.y = 9;
+					mirror[0].direction = DownLeft;
+
 					light[0].transform.pos.x = 9;
 					light[0].transform.pos.y = 9;
 					light[0].IsSideways = true;
@@ -572,8 +582,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 			for (int i = 0; i < lightMax; i++)
 			{
-
+			
 				light[i].Draw(light[i].IsSideways);
+
+
+			
 			}
 
 			goal.Draw();
@@ -581,26 +594,25 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 			
 
-
 			for (int i = 0; i < mirrorMax; i++)
 			{
 				if (mirror[i].alive == true)
 				{
-					if(isContMirror == true)
+					if (isContMirror == true)
 					{
 						SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-						DrawCircle(mirror[i].transform.pos.x,mirror[i].transform.pos.y,BLOCK_SIZE ,GetColor(190,140,140),true);
+						DrawCircle(mirror[i].transform.pos.x, mirror[i].transform.pos.y, BLOCK_SIZE, GetColor(190, 140, 140), true);
 						SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
 					}
 
-					//mirror[i].Draw();
-					DrawBox(mirror[i].transform.pos.x - mirror[i].transform.radius,
+					mirror[i].Draw(mirror[i].direction);
+					/*DrawBox(mirror[i].transform.pos.x - mirror[i].transform.radius,
 						mirror[i].transform.pos.y - mirror[i].transform.radius,
 						mirror[i].transform.pos.x + mirror[i].transform.radius,
 						mirror[i].transform.pos.y + mirror[i].transform.radius,
 						GetColor(200, 50, 50), true);
 
-					DrawRotaGraph(mirror[i].transform.pos.x, mirror[i].transform.pos.y, 1.0, mirror[i].angle, mirrorGH, TRUE);
+					DrawRotaGraph(mirror[i].transform.pos.x, mirror[i].transform.pos.y, 1.0, mirror[i].angle, mirrorGH, TRUE);*/
 				}
 			}
 
@@ -608,12 +620,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			DrawGraph(player.transform.pos.x - BLOCK_SIZE * 2, player.transform.pos.y - BLOCK_SIZE * 2, searchGH, true);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);*/
 
-			if(isContMirror == false)
-					{
+			if (isContMirror == false)
+			{
 				SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-						DrawCircle(player.transform.pos.x,player.transform.pos.y,BLOCK_SIZE ,GetColor(140,140,190),true);
-						SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
-					}
+				DrawCircle(player.transform.pos.x, player.transform.pos.y, BLOCK_SIZE, GetColor(140, 140, 190), true);
+				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, alpha);
+			}
 
 			player.Draw();
 
@@ -621,6 +633,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			{
 				switch (stage)
 				{
+					if (countEvent > 0)
+					{
+						countEvent--;
+					}
+					else
+					{
+						DrawFormatString(200, WIN_HEIGHT / 2 + 100, white, "左shift & 右shift 同時押しで\nチュートリアルスキップ\n");
+					}
 				case 1:
 					if (player.transform.pos.x < BLOCK_SIZE * 3
 						&& player.transform.pos.y < BLOCK_SIZE * 3)
@@ -673,15 +693,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 						for (int i = 0; i < lightMax; i++)
 						{
 
-						if (Collision(goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right,
-							light[i].edge.top, light[i].edge.bottom, light[i].edge.left, light[i].edge.right) == true)
-						{
-							DrawFormatString(200, WIN_HEIGHT / 2 + 100, white, "光線に触れないようにゴールを目指そう\n");
-						}
-						else
-						{
-							DrawFormatString(200, WIN_HEIGHT / 2 + 100, white, "まずは鏡を操作してゴールを起動させよう\n");
-						}
+							if (Collision(goal.edge.top, goal.edge.bottom, goal.edge.left, goal.edge.right,
+								light[i].edge.top, light[i].edge.bottom, light[i].edge.left, light[i].edge.right) == true)
+							{
+								DrawFormatString(200, WIN_HEIGHT / 2 + 100, white, "光線に触れないようにゴールを目指そう\n");
+							}
+							else
+							{
+								DrawFormatString(200, WIN_HEIGHT / 2 + 100, white, "まずは鏡を操作してゴールを起動させよう\n");
+							}
 						}
 					}
 
@@ -695,8 +715,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		if (sceneNow == Pause)
 		{
+			
+
+
 			DrawFormatString(100, WIN_HEIGHT / 2, GetColor(255, 255, 255), "PAUSE");
+
+
 		}
+		;
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
 		ScreenFlip();
@@ -719,6 +745,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	DeleteGraph(mirrorGH);
 	DeleteGraph(searchGH);
+	DeleteGraph(ghostGH);
 
 	// Dxライブラリ終了処理
 	DxLib_End();

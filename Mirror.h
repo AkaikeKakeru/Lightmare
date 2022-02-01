@@ -18,7 +18,7 @@ typedef struct Mirror
 	~Mirror();
 
 	void Move(char*keys,char*oldkeys);
-	void Draw();
+	void Draw(int DirectionNum);
 }Mirror;
 
 ////鏡
